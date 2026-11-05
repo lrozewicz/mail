@@ -1,0 +1,15 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  # Base images (Stalwart is pinned by tag + digest, Alpine by tag).
+  - package-ecosystem: docker
+    directory: /docker/stalwart
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /docker/snappymail
+    schedule:
+      interval: weekly

@@ -1,0 +1,42 @@
+# CI/CD: shared workflows from github.com/lrozewicz/.github
+#   pull request     -> tests, image build, Trivy (no secrets, also for forks)
+#   push to main     -> build, push to Harbor, deploy to mail.dev / webmail.dev.lucasnextgen.com
+#   tag v1.2.3       -> promote the same images, deploy to mail / webmail.lucasnextgen.com
+# Two images (<app>/stalwart, <app>/snappymail), one tag.
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  pr:
+    if: github.event_name == 'pull_request'
+    uses: lrozewicz/.github/.github/workflows/pr.yml@main
+    with:
+      images: |
+        [
+          {"name": "stalwart", "context": "docker/stalwart", "dockerfile": "docker/stalwart/Dockerfile"},
+          {"name": "snappymail", "context": "docker/snappymail", "dockerfile": "docker/snappymail/Dockerfile"}
+        ]
+
+  deploy:
+    if: github.event_name == 'push'
+    uses: lrozewicz/.github/.github/workflows/deploy.yml@main
+    with:
+      environment: ${{ github.ref_type == 'tag' && 'prod' || 'dev' }}
+      images: |
+        [
+          {"name": "stalwart", "context": "docker/stalwart", "dockerfile": "docker/stalwart/Dockerfile"},
+          {"name": "snappymail", "context": "docker/snappymail", "dockerfile": "docker/snappymail/Dockerfile"}
+        ]
+    secrets:
+      HARBOR_USERNAME: ${{ secrets.HARBOR_USERNAME }}
+      HARBOR_PASSWORD: ${{ secrets.HARBOR_PASSWORD }}
+      GITOPS_APP_PRIVATE_KEY: ${{ secrets.GITOPS_APP_PRIVATE_KEY }}
