@@ -4,7 +4,7 @@
 ARG SNAPPYMAIL_VERSION=2.38.2
 ARG SNAPPYMAIL_SHA256=71f1d8a9065cc9cf7ddd064f5c47cc7b255cb70e6a56713647fc73d4b79e33ec
 
-FROM docker.io/library/alpine:3.22 AS fetch
+FROM docker.io/library/alpine:3.24 AS fetch
 ARG SNAPPYMAIL_VERSION
 ARG SNAPPYMAIL_SHA256
 RUN apk add --no-cache curl
@@ -13,7 +13,7 @@ RUN curl -fsSLO "https://github.com/the-djmaze/snappymail/releases/download/v${S
     && echo "${SNAPPYMAIL_SHA256}  snappymail-${SNAPPYMAIL_VERSION}.tar.gz" | sha256sum -c - \
     && mkdir /app && tar xzf "snappymail-${SNAPPYMAIL_VERSION}.tar.gz" -C /app
 
-FROM docker.io/library/alpine:3.22 AS base
+FROM docker.io/library/alpine:3.24 AS base
 RUN apk add --no-cache nginx php84 php84-fpm php84-ctype php84-curl php84-dom php84-iconv php84-intl \
       php84-mbstring php84-opcache php84-openssl php84-session php84-simplexml php84-sodium php84-xml php84-zlib php84-fileinfo php84-phar \
     && mkdir -p /etc/snappymail /data && chown 10001:10001 /data
