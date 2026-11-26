@@ -1,7 +1,7 @@
 # Stalwart mail server (SMTP/IMAP/JMAP), official image pinned by digest, run as UID 10001 with a
 # read-only root filesystem. Data lives in MariaDB (chart `database`), nothing on local disk.
 # Update: new tag + digest (`docker buildx imagetools inspect stalwartlabs/stalwart:<tag>`).
-FROM docker.io/stalwartlabs/stalwart:v1.0.3@sha256:73c684a84c24f5b4206ec266a8deb8986fe44a9f623997e07f084388d943c8bd AS base
+FROM docker.io/stalwartlabs/stalwart:v1.1.1@sha256:5ebdf474b237161742fe4309396af4ae8797c938e8e6eb7e2d4837332c4f9851 AS base
 USER root
 # No file capabilities: with allowPrivilegeEscalation=false the binary would not start. The server
 # listens on unprivileged ports behind Traefik.
